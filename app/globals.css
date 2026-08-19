@@ -1,26 +1,124 @@
 @import "tailwindcss";
 
+/* ------------------------------------------------------------------
+   Design tokens
+   A warm, breathable "studio" palette: cream paper backgrounds,
+   near-black ink for contrast sections, and a soft sage accent
+   pulled from the inspiration board. Kept intentionally narrow —
+   a calm palette is part of the yoga/meditation brief.
+------------------------------------------------------------------- */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Surfaces */
+  --color-cream: #faf6ef; /* primary page background */
+  --color-cream-100: #f4efe4; /* alternate/section background */
+  --color-paper: #ffffff; /* cards, elevated surfaces */
+
+  /* Ink (dark sections, primary text) */
+  --color-ink: #14151a;
+  --color-ink-soft: #6b6a63;
+  --color-ink-muted: #a3a196;
+
+  /* Lines */
+  --color-sand: #e7e1d2;
+
+  /* Accent — muted sage, used sparingly */
+  --color-sage: #c9d9a8;
+  --color-sage-100: #eef2e3;
+  --color-sage-dark: #7c9464;
+
+  --color-white: #ffffff;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-cream: var(--color-cream);
+  --color-cream-100: var(--color-cream-100);
+  --color-paper: var(--color-paper);
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-ink-muted: var(--color-ink-muted);
+
+  --color-sand: var(--color-sand);
+
+  --color-sage: var(--color-sage);
+  --color-sage-100: var(--color-sage-100);
+  --color-sage-dark: var(--color-sage-dark);
+
+  --font-display: var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Gentle, organic easing — no linear or "aggressive" curves */
+  --ease-organic: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-soft: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --animate-fade-up: fade-up 0.9s var(--ease-organic) both;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(1.25rem);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
   }
 }
 
+/* ------------------------------------------------------------------
+   Base styles
+------------------------------------------------------------------- */
+* {
+  scroll-behavior: auto; /* Lenis owns smooth scrolling; see SmoothScrollProvider */
+}
+
+html {
+  background: var(--color-cream);
+}
+
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: var(--color-sage);
+  color: var(--color-ink);
+}
+
+/* Slim, quiet scrollbar that fits the "calm" aesthetic */
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-cream);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--color-sand);
+  border-radius: 9999px;
+  border: 2px solid var(--color-cream);
+}
+
+/* Respect users who've asked for reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Lenis smooth-scroll housekeeping */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
 }
