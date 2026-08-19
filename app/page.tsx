@@ -1,12 +1,13 @@
 import { Hero } from "@/components/sections/hero";
 import { Philosophy } from "@/components/sections/philosophy";
+import { Classes } from "@/components/sections/classes";
 
 /**
  * Temporary placeholder sections.
- * Each remaining section in the execution plan (Classes, Testimonials,
- * Contact, Footer) will replace its matching block below — they exist now
- * only so the navbar's transparent → scrolled transition and anchor
- * scrolling can be seen working end to end.
+ * Each remaining section in the execution plan (Testimonials, Contact,
+ * Footer) will replace its matching block below — they exist now only so
+ * the navbar's transparent → scrolled transition and anchor scrolling can
+ * be seen working end to end.
  */
 function Placeholder({
   id,
@@ -36,7 +37,7 @@ export default function Home() {
     <main className="flex-1">
       <Hero />
       <Philosophy />
-      <Placeholder id="classes" label="Classes" dark />
+      <Classes />
       <Placeholder id="testimonials" label="Testimonials" />
       <Placeholder id="contact" label="Contact" dark />
     </main>
