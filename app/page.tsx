@@ -1,13 +1,14 @@
 import { Hero } from "@/components/sections/hero";
 import { Philosophy } from "@/components/sections/philosophy";
 import { Classes } from "@/components/sections/classes";
+import { Testimonials } from "@/components/sections/testimonials";
 
 /**
  * Temporary placeholder sections.
- * Each remaining section in the execution plan (Testimonials, Contact,
- * Footer) will replace its matching block below — they exist now only so
- * the navbar's transparent → scrolled transition and anchor scrolling can
- * be seen working end to end.
+ * Each remaining section in the execution plan (Contact, Footer) will
+ * replace its matching block below — they exist now only so the navbar's
+ * transparent → scrolled transition and anchor scrolling can be seen
+ * working end to end.
  */
 function Placeholder({
   id,
@@ -38,7 +39,7 @@ export default function Home() {
       <Hero />
       <Philosophy />
       <Classes />
-      <Placeholder id="testimonials" label="Testimonials" />
+      <Testimonials />
       <Placeholder id="contact" label="Contact" dark />
     </main>
   );
