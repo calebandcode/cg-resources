@@ -82,7 +82,7 @@ export function Navbar() {
             onClick={(e) => handleNavClick(e, "#home")}
             className="flex items-center gap-2.5"
           >
-            <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-accent">
+            <div className="relative w-8 h-8 rounded-full overflow-hidden border border-accent shrink-0 shadow-xs">
               <Image
                 src="/assets/CMA-Logo.png"
                 alt="CMA Logo"
@@ -202,7 +202,7 @@ export function Navbar() {
                 onClick={(e) => handleNavClick(e, "#home")}
                 className="flex items-center gap-2.5"
               >
-                <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-accent">
+                <div className="relative w-8 h-8 rounded-full overflow-hidden border border-accent shrink-0 shadow-xs">
                   <Image
                     src="/assets/CMA-Logo.png"
                     alt="CMA Logo"

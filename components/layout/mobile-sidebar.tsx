@@ -55,7 +55,7 @@ export function MobileSidebar({ isOpen, onClose, activeSection }: MobileSidebarP
               alt="CMA Logo"
               width={42}
               height={42}
-              className="rounded-lg object-cover border-2 border-[var(--accent)]"
+              className="rounded-full object-cover border-2 border-[var(--accent)] shrink-0"
             />
             <span className="font-display font-semibold tracking-wider text-base text-[var(--text)]">
               CMA

@@ -143,7 +143,7 @@ export function Footer() {
               }}
               className="flex items-center gap-3 font-display text-xl font-bold tracking-tight text-cream"
             >
-              <div className="relative w-8 h-8 rounded-lg overflow-hidden border border-accent">
+              <div className="relative w-8 h-8 rounded-full overflow-hidden border border-accent shrink-0 shadow-xs">
                 <Image
                   src="/assets/CMA-Logo.png"
                   alt="CMA Logo"
