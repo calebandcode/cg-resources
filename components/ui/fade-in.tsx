@@ -35,7 +35,7 @@ export function FadeIn({
   as = "div",
 }: FadeInProps) {
   const variants = makeVariants(distance, delay);
-  const viewport = { once: true, margin: "-10% 0px -10% 0px" as const };
+  const viewport = { once: true, margin: "0px 0px -40px 0px" as const };
 
   if (as === "li") {
     return (

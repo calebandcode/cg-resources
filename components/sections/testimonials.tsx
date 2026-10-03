@@ -21,38 +21,38 @@ const testimonials: Testimonial[] = [
   {
     id: "emma",
     quote:
-      "I used to feel drained all the time. Now I actually look forward to moving my body — the weekly check-ins kept me consistent.",
+      "I used to lack physical confidence. After joining CMA, the structured grading and weekly dojo check-ins completely transformed my fitness, discipline, and stamina.",
     name: "Emma R.",
-    role: "Member since 2023",
+    role: "Karate Member · Since 2023",
     initials: "ER",
-    tone: "bg-sage",
+    tone: "bg-accent",
   },
   {
     id: "daniel",
     quote:
-      "The breathing techniques alone changed how I handle stress at work. Small habits, genuinely real results.",
+      "The Jiujutsu and Integrated Self-Defense techniques changed how I handle high-pressure situations. Practical skills, real mastery, and zero ego.",
     name: "Daniel K.",
-    role: "Private Coaching client",
+    role: "Self-Defense Client",
     initials: "DK",
-    tone: "bg-[#c9a68a]",
+    tone: "bg-gold",
   },
   {
     id: "priya",
     quote:
-      "I was skeptical about online sessions, but it feels just as personal as in-person. My flexibility and sleep have both improved.",
+      "The classical budo training under Shihandai Johnson and his instructors is exceptional. My flexibility, focus, and mental calm have reached new heights.",
     name: "Priya S.",
-    role: "Vinyasa Flow",
+    role: "Aikido & Karate Practitioner",
     initials: "PS",
     tone: "bg-ink",
   },
   {
     id: "jordan",
     quote:
-      "Coaching here isn't about perfect poses — it's about feeling at home in my body again. That shift meant everything.",
+      "CMA isn't about aggression — it's about building the complete human being through discipline, respect, and courage. That shift meant everything to my family.",
     name: "Jordan M.",
-    role: "Restorative Yoga",
+    role: "Parent & Adult Member",
     initials: "JM",
-    tone: "bg-sage-dark",
+    tone: "bg-[#8a1a20]",
   },
 ];
 
@@ -92,15 +92,14 @@ export function Testimonials() {
     <section id="testimonials" className="bg-paper">
       <div className="mx-auto max-w-4xl px-6 py-28 text-center sm:px-8 sm:py-32">
         <FadeIn>
-          <p className="font-display text-xs font-semibold uppercase tracking-[0.35em] text-sage-dark">
-            Testimonials
+          <p className="font-display text-xs font-semibold uppercase tracking-[0.35em] text-accent">
+            Student Testimonials
           </p>
-          <h2 className="mx-auto mt-6 max-w-lg font-display text-4xl font-semibold tracking-tight text-ink sm:text-5xl">
-            What Our Students Say
+          <h2 className="mx-auto mt-6 max-w-lg font-display text-4xl font-bold tracking-tight text-ink sm:text-5xl">
+            What Our Martial Artists Say
           </h2>
-          <p className="mx-auto mt-5 max-w-md text-ink-soft">
-            A few words from people who turned small, steady steps into real
-            change.
+          <p className="mx-auto mt-5 max-w-md text-ink-soft font-sans">
+            Hear from members who turned steady discipline and regular practice into real transformation.
           </p>
         </FadeIn>
 
@@ -114,7 +113,7 @@ export function Testimonials() {
           >
             <span
               aria-hidden
-              className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 font-display text-7xl text-sage/30 sm:-top-12"
+              className="pointer-events-none absolute -top-10 left-1/2 -translate-x-1/2 font-display text-7xl text-accent/20 sm:-top-12"
             >
               &ldquo;
             </span>
@@ -167,7 +166,7 @@ export function Testimonials() {
                 type="button"
                 aria-label="Previous testimonial"
                 onClick={() => go(index - 1, -1)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-sand text-ink transition-colors duration-300 hover:border-ink/40 hover:bg-cream"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-sand text-ink transition-colors duration-300 hover:border-accent hover:text-accent hover:bg-cream cursor-pointer"
               >
                 ←
               </button>
@@ -180,12 +179,12 @@ export function Testimonials() {
                     aria-label={`Go to testimonial ${i + 1}`}
                     aria-current={i === index}
                     onClick={() => go(i, i > index ? 1 : -1)}
-                    className="p-1.5"
+                    className="p-1.5 cursor-pointer"
                   >
                     <span
                       className={cn(
                         "block h-1.5 rounded-full transition-all duration-500 ease-organic",
-                        i === index ? "w-6 bg-ink" : "w-1.5 bg-sand"
+                        i === index ? "w-6 bg-accent" : "w-1.5 bg-sand"
                       )}
                     />
                   </button>
@@ -196,7 +195,7 @@ export function Testimonials() {
                 type="button"
                 aria-label="Next testimonial"
                 onClick={() => go(index + 1, 1)}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-sand text-ink transition-colors duration-300 hover:border-ink/40 hover:bg-cream"
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-sand text-ink transition-colors duration-300 hover:border-accent hover:text-accent hover:bg-cream cursor-pointer"
               >
                 →
               </button>
@@ -212,7 +211,7 @@ function Stars() {
   return (
     <div className="flex items-center justify-center gap-1" aria-hidden>
       {Array.from({ length: 5 }).map((_, i) => (
-        <svg key={i} viewBox="0 0 20 20" className="h-4 w-4 fill-sage-dark">
+        <svg key={i} viewBox="0 0 20 20" className="h-4 w-4 fill-gold">
           <path d="M10 1.5l2.59 5.25 5.79.84-4.19 4.08.99 5.77L10 14.77l-5.18 2.67.99-5.77L1.62 7.59l5.79-.84L10 1.5z" />
         </svg>
       ))}

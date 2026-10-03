@@ -13,19 +13,19 @@ interface Blob {
 const blobs: Blob[] = [
   {
     className: "-left-[10%] -top-[15%] h-[55vw] w-[55vw] max-w-2xl",
-    color: "var(--color-sage)",
+    color: "var(--color-accent)",
     animate: { x: [0, 40, -10, 0], y: [0, 30, 60, 0], scale: [1, 1.08, 0.96, 1] },
     duration: 22,
   },
   {
     className: "-right-[15%] top-[5%] h-[45vw] w-[45vw] max-w-xl",
-    color: "#c9a68a",
+    color: "var(--color-gold)",
     animate: { x: [0, -30, 20, 0], y: [0, 40, -20, 0], scale: [1, 0.94, 1.06, 1] },
     duration: 26,
   },
   {
     className: "bottom-[-20%] left-[20%] h-[50vw] w-[50vw] max-w-2xl",
-    color: "#e7e1d2",
+    color: "#85141c",
     animate: { x: [0, 20, -30, 0], y: [0, -30, 10, 0], scale: [1, 1.05, 0.98, 1] },
     duration: 30,
   },
@@ -33,10 +33,7 @@ const blobs: Blob[] = [
 
 /**
  * Slow, breathing gradient-blob backdrop for dark sections (Hero, Contact).
- * Blobs drift on an infinite loop — evoking a slow inhale/exhale rather than
- * decoration for its own sake. Freezes to a static frame for users who
- * prefer reduced motion, and a soft grain + vignette keep foreground text
- * legible regardless of blob position.
+ * Evoking a disciplined inhale/exhale with subtle texture and soft lighting.
  */
 export function AmbientBackground({ className }: { className?: string }) {
   const prefersReducedMotion = useReducedMotion();
@@ -47,7 +44,7 @@ export function AmbientBackground({ className }: { className?: string }) {
         <motion.div
           key={i}
           className={cn("absolute rounded-full blur-3xl", blob.className)}
-          style={{ backgroundColor: blob.color, opacity: 0.35 }}
+          style={{ backgroundColor: blob.color, opacity: 0.28 }}
           animate={prefersReducedMotion ? undefined : blob.animate}
           transition={{
             duration: blob.duration,
@@ -66,7 +63,7 @@ export function AmbientBackground({ className }: { className?: string }) {
       </svg>
 
       {/* Bottom vignette so content stays legible over any blob position */}
-      <div className="absolute inset-0 bg-gradient-to-b from-ink/10 via-ink/40 to-ink" />
+      <div className="absolute inset-0 bg-gradient-to-b from-ink/20 via-ink/50 to-ink" />
     </div>
   );
 }

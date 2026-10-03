@@ -1,0 +1,1622 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head><style>
+@font-face {
+  font-family: "Optimistic";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url("/fonts/OptimisticAI_VF_Optimized.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Optimistic Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/OptimisticMono_W_TextRegular.woff2") format("woff2");
+}
+:where(html) {
+  font-family: "Optimistic", system-ui, sans-serif;
+}
+:where(code, pre, kbd, samp) {
+  font-family: "Optimistic Mono", ui-monospace, monospace;
+}
+</style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FORECAST — Your Martial Arts Journey, Mapped</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@300;400;500;600;700&family=Archivo:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="icon" type="image/svg" href="favicon.svg">
+<link rel="apple-touch-icon" href="favicon.svg">
+<link rel="shortcut icon" type="image/svg" href="favicon.svg">
+<style>
+/* ============ THEME TOKENS ============ */
+:root {
+  --accent: #FF5400;
+  --accent-bright: #FF7A33;
+  --accent-dim: #B33A00;
+  --silver: #C8C8C8;
+  --silver-dim: #5a5a5a;
+}
+[data-theme="dark"] {
+  --bg: #0a0a0a;
+  --bg-darker: #050505;
+  --bg-card: #141414;
+  --bg-card-hover: #1a1a1a;
+
+  --fg: #f5f5f5;
+  --fg-dim: #c0c0c0;
+  --muted: #9a9a9a;
+
+  --border: #1f1f1f;
+  --border-light: #2a2a2a;
+  --overlay-soft: rgba(10,10,10,0.55);
+}
+[data-theme="light"] {
+  --bg: #f5f2ec;
+  --bg-darker: #ebe7df;
+  --bg-card: #ffffff;
+  --bg-card-hover: #faf7f1;
+  --fg: #1a1a1a;
+  --fg-dim: #4a4a4a;
+  --muted: #8a8a8a;
+  --border: #e0dcd4;
+  --border-light: #d4cfc4;
+  --overlay-soft: rgba(245, 242, 236, 0.55);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--fg);
+  font-family: 'Archivo', sans-serif;
+  overflow-x: hidden;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+  transition: background 0.4s ease, color 0.4s ease;
+}
+.font-display { font-family: 'Bebas Neue', sans-serif; letter-spacing: 0.005em; }
+.font-heading { font-family: 'Oswald', sans-serif; }
+.font-body { font-family: 'Archivo', sans-serif; }
+.font-mono { font-family: 'JetBrains Mono', monospace; }
+
+/* Grain overlay */
+.grain {
+  position: fixed;
+  inset: -10%;
+  pointer-events: none;
+  z-index: 200;
+  opacity: 0.06;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='250' height='250'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  mix-blend-mode: overlay;
+}
+[data-theme="light"] .grain { opacity: 0.04; mix-blend-mode: multiply; }
+
+/* Section reveal */
+.reveal {
+  opacity: 0;
+  transform: translateY(48px);
+  transition: opacity 0.9s cubic-bezier(0.22, 1, 0.36, 1), transform 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.in-view { opacity: 1; transform: translateY(0); }
+
+/* Hero reel */
+.reel-frame {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 2s ease-in-out;
+}
+.reel-frame.active { opacity: 1; }
+.reel-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: grayscale(100%) contrast(1.55) brightness(0.42);
+  transform: scale(1.06);
+}
+[data-theme="light"] .reel-frame img {
+  filter: grayscale(70%) contrast(1.2) brightness(0.85);
+}
+.reel-frame.active img {
+  animation: kenburns 9s ease-out forwards;
+}
+@keyframes kenburns {
+  0% { transform: scale(1.06) translate(0, 0); }
+  100% { transform: scale(1.2) translate(-3%, -3%); }
+}
+.hero-overlay {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(180deg, var(--overlay-soft) 0%, rgba(10,10,10,0.35) 30%, rgba(10,10,10,0.55) 70%, var(--bg) 100%),
+    radial-gradient(ellipse at 25% 60%, rgba(255, 84, 0, 0.18) 0%, transparent 55%);
+}
+[data-theme="light"] .hero-overlay {
+  background:
+    linear-gradient(180deg, rgba(245,242,236,0.7) 0%, rgba(245,242,236,0.3) 30%, rgba(245,242,236,0.6) 70%, var(--bg) 100%),
+    radial-gradient(ellipse at 25% 60%, rgba(255, 84, 0, 0.15) 0%, transparent 55%);
+}
+
+/* Text effects */
+.text-stroke {
+  -webkit-text-stroke: 1.5px var(--silver-dim);
+  color: transparent;
+}
+[data-theme="light"] .text-stroke {
+  -webkit-text-stroke: 1.5px var(--fg);
+}
+
+/* Section marker */
+.section-marker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.2em;
+  color: var(--accent);
+  text-transform: uppercase;
+}
+.section-marker::before {
+  content: '';
+  width: 32px;
+  height: 1px;
+  background: var(--accent);
+}
+
+/* Notch corners */
+.notch-corner {
+  position: relative;
+}
+.notch-corner::before,
+.notch-corner::after {
+  content: '';
+  position: absolute;
+  width: 14px;
+  height: 14px;
+  border: 1px solid var(--accent);
+  pointer-events: none;
+}
+.notch-corner::before {
+  top: -1px;
+  left: -1px;
+  border-right: none;
+  border-bottom: none;
+}
+.notch-corner::after {
+  bottom: -1px;
+  right: -1px;
+  border-left: none;
+  border-top: none;
+}
+
+/* Cards */
+.info-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  transition: border-color 0.4s, background 0.4s;
+}
+.info-card:hover {
+  border-color: var(--accent-dim);
+  background: var(--bg-card-hover);
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--accent);
+  color: #000;
+  font-family: 'Oswald', sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 1rem 2rem;
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  border: 1px solid var(--accent);
+}
+.btn-primary:hover {
+  background: var(--accent-bright);
+  border-color: var(--accent-bright);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--fg);
+  font-family: 'Oswald', sans-serif;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  padding: 1rem 2rem;
+  border: 1px solid var(--border-light);
+  transition: all 0.3s;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.btn-ghost:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Nav */
+.nav-link {
+  position: relative;
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.85rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--fg-dim);
+  transition: color 0.3s;
+}
+.nav-link:hover { color: var(--fg); }
+.nav-link::before {
+  content: '';
+  position: absolute;
+  left: -14px;
+  top: 50%;
+  transform: translateY(-50%) scaleY(0);
+  width: 4px;
+  height: 4px;
+  background: var(--accent);
+  transition: transform 0.3s;
+}
+.nav-link:hover::before { transform: translateY(-50%) scaleY(1); }
+
+/* Marquee */
+@keyframes marquee {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  animation: marquee 40s linear infinite;
+  width: max-content;
+}
+
+/* Modal */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(8px);
+  z-index: 100;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 1rem;
+}
+[data-theme="light"] .modal-backdrop { background: rgba(0,0,0,0.5); }
+.modal-backdrop.open { display: flex; }
+.modal-panel {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  max-width: 640px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+.modal-panel::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 50px;
+  height: 50px;
+  border-top: 2px solid var(--accent);
+  border-left: 2px solid var(--accent);
+  pointer-events: none;
+}
+.modal-panel::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 50px;
+  height: 50px;
+  border-bottom: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
+  pointer-events: none;
+}
+
+/* Form inputs */
+.form-input {
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--fg);
+  padding: 0.85rem 0;
+  font-family: 'Oswald', sans-serif;
+  font-size: 1.1rem;
+  width: 100%;
+  transition: border-color 0.3s;
+  letter-spacing: 0.04em;
+}
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+.form-select {
+  background: var(--bg-card);
+  border: 1px solid var(--border-light);
+  color: var(--fg);
+  padding: 0.75rem 1rem;
+  font-family: 'Oswald', sans-serif;
+  font-size: 1rem;
+  width: 100%;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: border-color 0.3s;
+}
+.form-select:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+/* Pill selector */
+.pill {
+  cursor: pointer;
+  padding: 0.55rem 1.1rem;
+  border: 1px solid var(--border-light);
+  background: transparent;
+  color: var(--fg-dim);
+  font-family: 'Oswald', sans-serif;
+  font-size: 0.8rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  transition: all 0.3s;
+}
+.pill:hover {
+  border-color: var(--silver-dim);
+  color: var(--fg);
+}
+.pill.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+  font-weight: 600;
+}
+
+/* Journey timeline */
+.journey-timeline {
+  position: relative;
+  padding: 2rem 0;
+}
+.journey-line {
+  position: absolute;
+  left: 24px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--border-light);
+}
+.journey-line-progress {
+  position: absolute;
+  left: 24px;
+  top: 0;
+  width: 2px;
+  background: var(--accent);
+  height: 0%;
+  transition: height 1s ease;
+}
+.journey-node {
+  position: relative;
+  padding-left: 64px;
+  padding-bottom: 2rem;
+}
+.journey-node:last-child { padding-bottom: 0; }
+.journey-dot {
+  position: absolute;
+  left: 16px;
+  top: 4px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 2px solid var(--border-light);
+  background: var(--bg-card);
+  transition: all 0.4s;
+}
+.journey-node.achieved .journey-dot {
+  background: var(--accent);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(255, 84, 0, 0.15);
+}
+.journey-node.current .journey-dot {
+  background: var(--bg);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 4px rgba(255, 84, 0, 0.3);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%, 100% { box-shadow: 0 0 0 4px rgba(255, 84, 0, 0.3); }
+  50% { box-shadow: 0 0 0 8px rgba(255, 84, 0, 0.1); }
+}
+.journey-belt {
+  display: inline-block;
+  width: 28px;
+  height: 10px;
+  border-radius: 2px;
+  margin-right: 0.5rem;
+  vertical-align: middle;
+  border: 1px solid rgba(0,0,0,0.2);
+}
+
+/* Toast */
+.toast {
+  position: fixed;
+  top: 90px;
+  right: 24px;
+  background: var(--bg-card);
+  border: 1px solid var(--accent);
+  border-left: 3px solid var(--accent);
+  padding: 1rem 1.5rem;
+  z-index: 150;
+  transform: translateX(120%);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  max-width: 360px;
+}
+.toast.visible { transform: translateX(0); }
+
+/* Theme toggle */
+.theme-toggle {
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--border-light);
+  background: transparent;
+  color: var(--fg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+.theme-toggle:hover {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+/* Feature card */
+.feature-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  padding: 2rem;
+  transition: all 0.4s;
+  position: relative;
+}
+.feature-card:hover {
+  border-color: var(--accent-dim);
+  transform: translateY(-4px);
+}
+.feature-icon {
+  width: 48px;
+  height: 48px;
+  border: 1px solid var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 1.2rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: var(--bg-darker); }
+::-webkit-scrollbar-thumb { background: var(--accent-dim); }
+::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+/* Stats number */
+.number-display { font-variant-numeric: tabular-nums; }
+
+/* Print styles - FIXED ARCHITECTURE */
+.print-report { display: none; }
+@media print {
+  html, body { background: white !important; color: black !important; margin: 0 !important; padding: 0 !important; }
+  body > *:not(#printReport) { display: none !important; }
+  #printReport { display: block !important; position: static !important; width: 100% !important; max-width: 100% !important; margin: 0 !important; padding: 20px !important; background: white !important; color: black !important; }
+  #printReport * { color: black !important; }
+  #printReport .print-accent { color: #FF5400 !important; }
+  @page { margin: 1.5cm; size: A4; }
+}
+.print-only { display: none; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .modal-panel { max-height: 95vh; }
+}
+
+/* =========================================================
+   DARK/LIGHT MODE TEXT VISIBILITY FIX
+   ========================================================= */
+
+/* DARK MODE */
+[data-theme="dark"] {
+  --fg: #f5f5f5;
+  --fg-dim: #c0c0c0;
+  --muted: #9a9a9a;
+}
+
+/* LIGHT MODE */
+[data-theme="light"] {
+  --fg: #1a1a1a;
+  --fg-dim: #4a4a4a;
+  --muted: #707070;
+}
+
+/* Anything that was accidentally hard-coded black */
+[data-theme="dark"] .text-black {
+  color: #ffffff !important;
+}
+
+/* Your manually styled black text */
+[data-theme="dark"] [style*="color: #000"],
+[data-theme="dark"] [style*="color:#000"],
+[data-theme="dark"] [style*="color: black"],
+[data-theme="dark"] [style*="color:black"] {
+  color: #ffffff !important;
+}
+
+/* Keep text on orange buttons/badges dark because orange + black
+   has better contrast than orange + white */
+[data-theme="dark"] .btn-primary,
+[data-theme="dark"] .btn-primary *,
+[data-theme="dark"] .pill.active,
+[data-theme="dark"] .pill.active *,
+[data-theme="dark"] .journey-current,
+[data-theme="dark"] .journey-current * {
+  color: #000000 !important;
+}
+</style>
+</head>
+<body>
+<div class="grain"></div>
+
+<!-- ============ HEADER ============ -->
+<header class="fixed top-0 left-0 right-0 z-50 backdrop-blur-md border-b" style="background: color-mix(in srgb, var(--bg) 70%, transparent); border-color: var(--border);">
+  <div class="max-w-[1600px] mx-auto px-6 lg:px-10 py-4 flex items-center justify-between">
+    <a href="#" class="flex items-center gap-3 group">
+      <div class="w-9 h-9 flex items-center justify-center relative" style="background: var(--accent);">
+        <i class="fas fa-route text-black text-base"></i>
+        <div class="absolute -inset-1 border opacity-0 group-hover:opacity-100 transition-opacity" style="border-color: var(--accent);"></div>
+      </div>
+      <div>
+        <div class="font-display text-2xl leading-none tracking-wider">FORECAST</div>
+        <div class="font-mono text-[10px] tracking-[0.3em] mt-0.5" style="color: var(--muted);">MARTIAL ARTS · PROGRESSION</div>
+      </div>
+    </a>
+    <nav class="hidden lg:flex items-center gap-10">
+      <a href="#features" class="nav-link">Features</a>
+      <a href="#how" class="nav-link">How it works</a>
+      <a href="#dan" class="nav-link">Dan Path</a>
+      <a href="#" class="nav-link" onclick="openModal('start'); return false;">Start</a>
+    </nav>
+    <div class="flex items-center gap-3">
+      <button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme">
+        <i class="fas fa-moon" id="themeIcon"></i>
+      </button>
+      <a href="/index.html">
+      <button class="hidden sm:inline-flex btn-primary" style="padding: 0.65rem 1.25rem; font-size: 0.75rem;">
+        <i class="fas fa-arrow-left text-xs"></i>
+        <span>Back to CMA</span>
+      </button>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<section class="relative min-h-screen w-full overflow-hidden flex items-end" id="hero">
+  <div class="absolute inset-0" id="reelContainer">
+    <div class="reel-frame active"><img src="images/forecast-03.jpg" alt=""></div>
+    <div class="reel-frame"><img src="images/forecast-01.jpg" alt=""></div>
+    <div class="reel-frame"><img src="images/forecast-02.jpg" alt=""></div>
+    <div class="reel-frame"><img src="images/forecast-04.jpg" alt=""></div>
+  </div>
+  <div class="hero-overlay"></div>
+
+  <div class="relative z-10 w-full max-w-[1600px] mx-auto px-6 lg:px-10 pb-20 pt-32">
+    <div class="reveal in-view max-w-5xl">
+      <div class="section-marker mb-6"><span>PROGRESSION INTELLIGENCE</span></div>
+      <h1 class="font-display text-[14vw] md:text-[10vw] lg:text-[8.5vw] leading-[0.85] mb-8">
+        <span class="block">YOUR TRAINING</span>
+        <span class="block"><span class="text-stroke">HAS A</span> DESTINATION.</span>
+        <span class="block">FORECAST <span style="color: var(--accent);">SHOWS</span> THE JOURNEY.</span>
+      </h1>
+      <p class="max-w-xl text-base md:text-lg leading-relaxed mb-10" style="color: var(--fg-dim);">
+        Map your martial arts progression from <span style="color: var(--fg);">white belt to 10th Dan</span>. Understand your training commitment, visualize every milestone, and see where your current pace could take you — transparently calculated, step by step.
+      </p>
+      <div class="flex flex-wrap gap-4">
+        <button onclick="openModal('start')" class="btn-primary">
+          <span>Start My Journey</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+        <button onclick="openModal('map')" class="btn-ghost">
+          <i class="fas fa-map-location-dot"></i>
+          <span>Map Current Rank</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Bottom stats strip -->
+    <div class="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 pt-8 border-t" style="border-color: var(--border);">
+      <div>
+        <div class="font-display text-4xl md:text-5xl" style="color: var(--accent);">10</div>
+        <div class="font-mono text-[10px] tracking-[0.2em] uppercase mt-1" style="color: var(--muted);">Dan grades mapped</div>
+      </div>
+      <div>
+        <div class="font-display text-4xl md:text-5xl">16</div>
+        <div class="font-mono text-[10px] tracking-[0.2em] uppercase mt-1" style="color: var(--muted);">Belt milestones</div>
+      </div>
+      <div>
+        <div class="font-display text-4xl md:text-5xl">∞</div>
+        <div class="font-mono text-[10px] tracking-[0.2em] uppercase mt-1" style="color: var(--muted);">What-if scenarios</div>
+      </div>
+      <div>
+        <div class="font-display text-4xl md:text-5xl">PDF</div>
+        <div class="font-mono text-[10px] tracking-[0.2em] uppercase mt-1" style="color: var(--muted);">Exportable forecast</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scrolling ticker -->
+  <div class="absolute bottom-0 left-0 right-0 border-t py-3 overflow-hidden z-10" style="border-color: var(--border); background: color-mix(in srgb, var(--bg) 85%, transparent);">
+    <div class="marquee-track font-display text-sm tracking-[0.25em]" style="color: var(--silver-dim);">
+      <span class="px-8">A PRODUCT TTOSR</span><span style="color: var(--accent);">/</span>
+      <span class="px-8">THE TOUCH OF SIR.RICHQRD</span><span style="color: var(--accent);">/</span>
+      <span class="px-8">WHITE BELT TO BLACK</span><span style="color: var(--accent);">/</span>
+      <span class="px-8">FIRST DAN TO TENTH DAN</span><span style="color: var(--accent);">/</span>
+      <span class="px-8">HONEST PROJECTIONS</span><span style="color: var(--accent);">/</span>
+      <span class="px-8">INSTRUCTOR DECIDES</span><span style="color: var(--accent);">/</span>
+      <span class="px-8">A PRODUCT TTOSR</span><span style="color: var(--accent);">/</span>
+      <span class="px-8">THE TOUCH OF SIR.RICHQRD</span><span style="color: var(--accent);">/</span>
+      <span class="px-8">YOUR JOURNEY MAPPED</span><span style="color: var(--accent);">/</span>
+      <span class="px-8">DISCIPLINE OVER TIME</span><span style="color: var(--accent);">/</span>
+      <span class="px-8">WHITE BELT TO BLACK</span><span style="color: var(--accent);">/</span>
+      <span class="px-8">FIRST DAN TO TENTH DAN</span><span style="color: var(--accent);">/</span>
+      <span class="px-8">HONEST PROJECTIONS</span><span style="color: var(--accent);">/</span>
+      <span class="px-8">INSTRUCTOR DECIDES</span><span style="color: var(--accent);">/</span>
+      <span class="px-8">YOUR JOURNEY MAPPED</span><span style="color: var(--accent);">/</span>
+      <span class="px-8">DISCIPLINE OVER TIME</span><span style="color: var(--accent);">/</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FEATURES ============ -->
+<section class="relative py-28 lg:py-36" id="features">
+  <div class="max-w-[1600px] mx-auto px-6 lg:px-10">
+    <div class="reveal grid lg:grid-cols-12 gap-8 mb-16">
+      <div class="lg:col-span-6">
+        <div class="section-marker mb-6"><span>01 — Features</span></div>
+        <h2 class="font-display text-5xl md:text-6xl lg:text-7xl leading-[0.9]">
+          Where am I?<br>
+          <span class="text-stroke">Where am I</span> <span style="color: var(--accent);">going?</span>
+        </h2>
+      </div>
+      <div class="lg:col-span-5 lg:col-start-8 flex flex-col justify-end">
+        <p class="text-base leading-relaxed" style="color: var(--fg-dim);">
+          Three questions, answered with clarity. FORECAST brings data-driven insight to your martial arts progression — from your first class to your highest Dan.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div class="feature-card notch-corner">
+        <div class="feature-icon"><i class="fas fa-location-dot"></i></div>
+        <h3 class="font-display text-2xl mb-3">KNOW WHERE YOU ARE</h3>
+        <p class="text-sm leading-relaxed" style="color: var(--fg-dim);">See your current rank, time in grade, accumulated training hours, and exactly how close you are to your next milestone.</p>
+      </div>
+      <div class="feature-card notch-corner">
+        <div class="feature-icon"><i class="fas fa-map"></i></div>
+        <h3 class="font-display text-2xl mb-3">MAP YOUR JOURNEY</h3>
+        <p class="text-sm leading-relaxed" style="color: var(--fg-dim);">Visualize every belt from where you are now — to Black Belt, and beyond through all 10 Dan grades — with projected dates.</p>
+      </div>
+      <div class="feature-card notch-corner">
+        <div class="feature-icon"><i class="fas fa-hourglass-half"></i></div>
+        <h3 class="font-display text-2xl mb-3">HOURS VS CALENDAR</h3>
+        <p class="text-sm leading-relaxed" style="color: var(--fg-dim);">FORECAST respects both training volume and minimum time-in-grade. Complete hours early? The system tells you honestly.</p>
+      </div>
+      <div class="feature-card notch-corner">
+        <div class="feature-icon"><i class="fas fa-crystal-ball"></i></div>
+        <h3 class="font-display text-2xl mb-3">WHAT-IF SCENARIOS</h3>
+        <p class="text-sm leading-relaxed" style="color: var(--fg-dim);">Adjust your training frequency and see how it reshapes your projected journey. Plan with confidence.</p>
+      </div>
+      <div class="feature-card notch-corner">
+        <div class="feature-icon"><i class="fas fa-torii-gate"></i></div>
+        <h3 class="font-display text-2xl mb-3">FULL DAN PATH</h3>
+        <p class="text-sm leading-relaxed" style="color: var(--fg-dim);">Already a black belt? Project your path through 2nd, 3rd, 4th... all the way to 10th Dan — with realistic timelines.</p>
+      </div>
+      <div class="feature-card notch-corner">
+        <div class="feature-icon"><i class="fas fa-file-pdf"></i></div>
+        <h3 class="font-display text-2xl mb-3">EXPORT TO PDF</h3>
+        <p class="text-sm leading-relaxed" style="color: var(--fg-dim);">Print your forecast as a clean, shareable PDF. Keep it for your records, share with your instructor, or pin it on your wall.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ DAN PATH SECTION ============ -->
+<section class="relative py-28 lg:py-36 border-t" id="dan" style="border-color: var(--border); background: var(--bg-darker);">
+  <div class="max-w-[1600px] mx-auto px-6 lg:px-10">
+    <div class="reveal grid lg:grid-cols-12 gap-8 mb-16">
+      <div class="lg:col-span-7">
+        <div class="section-marker mb-6"><span>02 — The Dan Path</span></div>
+        <h2 class="font-display text-5xl md:text-6xl lg:text-7xl leading-[0.9]">
+          Beyond black belt,<br>
+          <span style="color: var(--accent);">the journey</span> <span class="text-stroke">continues.</span>
+        </h2>
+      </div>
+      <div class="lg:col-span-4 lg:col-start-9 flex flex-col justify-end">
+        <p class="text-base leading-relaxed" style="color: var(--fg-dim);">
+          Black belt is not the end — it's the beginning of mastery. FORECAST maps every Dan grade with realistic timelines based on minimum time-in-grade and cumulative training hours.
+        </p>
+      </div>
+    </div>
+
+    <div class="reveal grid md:grid-cols-2 lg:grid-cols-5 gap-4">
+      <div class="info-card p-6">
+        <div class="font-mono text-[10px] tracking-[0.2em] mb-2" style="color: var(--muted);">SHODAN · 1ST DAN</div>
+        <div class="font-display text-3xl mb-2">Black Belt</div>
+        <p class="text-xs" style="color: var(--fg-dim);">Foundation complete. The student becomes a practitioner.</p>
+      </div>
+      <div class="info-card p-6">
+        <div class="font-mono text-[10px] tracking-[0.2em] mb-2" style="color: var(--muted);">NIDAN · 2ND DAN</div>
+        <div class="font-display text-3xl mb-2">+2 Years</div>
+        <p class="text-xs" style="color: var(--fg-dim);">Refined technique. Teaching begins.</p>
+      </div>
+      <div class="info-card p-6">
+        <div class="font-mono text-[10px] tracking-[0.2em] mb-2" style="color: var(--muted);">SANDAN · 3RD DAN</div>
+        <div class="font-display text-3xl mb-2">+3 Years</div>
+        <p class="text-xs" style="color: var(--fg-dim);">Senior practitioner. Licensed instructor.</p>
+      </div>
+      <div class="info-card p-6">
+        <div class="font-mono text-[10px] tracking-[0.2em] mb-2" style="color: var(--muted);">YONDAN · 4TH–5TH DAN</div>
+        <div class="font-display text-3xl mb-2">+4–5 Yrs</div>
+        <p class="text-xs" style="color: var(--fg-dim);">Master level. School ownership eligibility.</p>
+      </div>
+      <div class="info-card p-6">
+        <div class="font-mono text-[10px] tracking-[0.2em] mb-2" style="color: var(--muted);">GODAN+ · 6TH–10TH</div>
+        <div class="font-display text-3xl mb-2">Lifetime</div>
+        <p class="text-xs" style="color: var(--fg-dim);">Grand master ranks. A lifetime of contribution.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="relative py-28 lg:py-36" id="how">
+  <div class="max-w-[1600px] mx-auto px-6 lg:px-10">
+    <div class="reveal mb-16">
+      <div class="section-marker mb-6"><span>03 — How it works</span></div>
+      <h2 class="font-display text-5xl md:text-6xl lg:text-7xl leading-[0.9]">
+        A transparent, honest system<br>
+        <span style="color: var(--accent);">built on the realities</span> of training.
+      </h2>
+    </div>
+
+    <div class="reveal grid md:grid-cols-3 gap-8">
+      <div class="relative">
+        <div class="font-display text-8xl mb-4" style="color: var(--accent);">01</div>
+        <h3 class="font-display text-2xl mb-3">ENTER YOUR DATA</h3>
+        <p class="text-sm leading-relaxed" style="color: var(--fg-dim);">Tell us your current rank, training frequency, and last grading date. Takes less than a minute.</p>
+      </div>
+      <div class="relative">
+        <div class="font-display text-8xl mb-4" style="color: var(--accent);">02</div>
+        <h3 class="font-display text-2xl mb-3">WE CALCULATE</h3>
+        <p class="text-sm leading-relaxed" style="color: var(--fg-dim);">Our engine applies standard progression hours, minimum time-in-grade, and your training pace — for every belt and Dan.</p>
+      </div>
+      <div class="relative">
+        <div class="font-display text-8xl mb-4" style="color: var(--accent);">03</div>
+        <h3 class="font-display text-2xl mb-3">SEE & EXPORT</h3>
+        <p class="text-sm leading-relaxed" style="color: var(--fg-dim);">Get a clear, interactive map of your journey. Print it as PDF, adjust scenarios, or share with your instructor.</p>
+      </div>
+    </div>
+
+    <div class="reveal mt-16 p-8 border" style="border-color: var(--border); background: var(--bg-card);">
+      <div class="flex items-start gap-4">
+        <i class="fas fa-circle-info text-xl mt-1" style="color: var(--accent);"></i>
+        <div>
+          <div class="font-heading text-sm tracking-wider uppercase mb-2">Important disclaimer</div>
+          <p class="text-sm leading-relaxed" style="color: var(--fg-dim);">
+            FORECAST is a progression planning and estimation tool. Forecast dates are <strong style="color: var(--fg);">not guarantees of promotion</strong>. Actual grading eligibility depends on technical competence, training requirements, minimum time-in-grade, conduct, instructor assessment, and the rules of the relevant martial arts organisation. <strong style="color: var(--fg);">The instructor's decision always supersedes the forecast.</strong>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA ============ -->
+<section class="relative py-28 lg:py-36 border-t" id="cta-bottom" style="border-color: var(--border); background: var(--bg-darker);">
+  <div class="max-w-[1600px] mx-auto px-6 lg:px-10 text-center">
+    <div class="reveal max-w-3xl mx-auto">
+      <div class="section-marker mb-6 justify-center"><span>04 — Begin</span></div>
+      <h2 class="font-display text-5xl md:text-6xl lg:text-7xl leading-[0.9] mb-8">
+        YOUR NEXT BELT<br>
+        <span class="text-stroke">IS ALREADY</span> <span style="color: var(--accent);">WAITING.</span>
+      </h2>
+      <p class="text-base leading-relaxed mb-10" style="color: var(--fg-dim);">
+        Whether you're tying your white belt for the first time or preparing for your next Dan examination — FORECAST maps the path ahead.
+      </p>
+      <div class="flex flex-wrap gap-4 justify-center">
+        <button onclick="openModal('start')" class="btn-primary">
+          <span>Start New Journey</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+        <button onclick="openModal('map')" class="btn-ghost">
+          <i class="fas fa-map-location-dot"></i>
+          <span>I'm Already Training</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="border-t py-12 relative overflow-hidden" style="border-color: var(--border); background: var(--bg-darker);">
+  <div class="max-w-[1600px] mx-auto px-6 lg:px-10">
+    <div class="flex flex-col md:flex-row justify-between gap-6 items-start md:items-center">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 flex items-center justify-center" style="background: var(--accent);">
+          <i class="fas fa-route text-black"></i>
+        </div>
+        <div>
+          <div class="font-display text-xl leading-none tracking-wider">FORECAST</div>
+          <div class="font-mono text-[10px] tracking-[0.3em] mt-0.5" style="color: var(--muted);">PROGRESSION INTELLIGENCE</div>
+        </div>
+      </div>
+      <div class="font-mono text-[11px] tracking-[0.15em] uppercase" style="color: var(--muted);">
+        © 2026 FORECAST · Built for martial artists, by martial artists
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- ============ MODAL: START JOURNEY ============ -->
+<div class="modal-backdrop" id="modalStart">
+  <div class="modal-panel p-8 lg:p-10">
+    <button onclick="closeModal('start')" class="absolute top-4 right-4 w-9 h-9 flex items-center justify-center border hover:border-[var(--accent)] transition-colors" style="border-color: var(--border-light); color: var(--fg);">
+      <i class="fas fa-xmark text-sm"></i>
+    </button>
+    <div class="font-mono text-[11px] tracking-[0.2em] uppercase mb-3" style="color: var(--accent);">// New Journey</div>
+    <h3 class="font-display text-4xl mb-2">When are you starting?</h3>
+    <p class="text-sm mb-8" style="color: var(--fg-dim);">Pick the date you'll begin (or began) training. We'll project your full journey to Black Belt and beyond.</p>
+
+    <form id="startForm" class="space-y-6">
+      <div>
+        <label class="font-mono text-[10px] tracking-[0.2em] uppercase block mb-2" style="color: var(--muted);">Start date</label>
+        <input type="date" id="startDate" class="form-input" required>
+      </div>
+      <div>
+        <label class="font-mono text-[10px] tracking-[0.2em] uppercase block mb-2" style="color: var(--muted);">Training organisation (optional)</label>
+        <input type="text" id="startOrg" class="form-input" placeholder="e.g. Shotokan Karate Association">
+      </div>
+      <div>
+        <label class="font-mono text-[10px] tracking-[0.2em] uppercase block mb-3" style="color: var(--muted);">Category</label>
+        <div class="flex flex-wrap gap-2" id="categorySelector">
+          <span class="pill active" data-cat="adult">Adult</span>
+          <span class="pill" data-cat="junior">Junior</span>
+          <span class="pill" data-cat="veteran">Veteran</span>
+        </div>
+      </div>
+      <div>
+        <label class="font-mono text-[10px] tracking-[0.2em] uppercase block mb-2" style="color: var(--muted);">Sessions per week</label>
+        <select id="startSessions" class="form-select">
+          <option value="1">1 / week</option>
+          <option value="2" selected>2 / week</option>
+          <option value="3">3 / week</option>
+          <option value="4">4 / week</option>
+          <option value="5">5 / week</option>
+          <option value="6">6 / week</option>
+        </select>
+      </div>
+      <div>
+        <label class="font-mono text-[10px] tracking-[0.2em] uppercase block mb-2" style="color: var(--muted);">Hours per session</label>
+        <select id="startHours" class="form-select">
+          <option value="1">1 hour</option>
+          <option value="1.5" selected>1.5 hours</option>
+          <option value="2">2 hours</option>
+          <option value="2.5">2.5 hours</option>
+          <option value="3">3 hours</option>
+        </select>
+      </div>
+      <div class="flex gap-3 pt-4">
+        <button type="button" onclick="closeModal('start')" class="btn-ghost flex-1 justify-center">Back</button>
+        <button type="submit" class="btn-primary flex-1 justify-center">
+          <span>Map My Journey</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ MODAL: MAP CURRENT RANK ============ -->
+<div class="modal-backdrop" id="modalMap">
+  <div class="modal-panel p-8 lg:p-10">
+    <button onclick="closeModal('map')" class="absolute top-4 right-4 w-9 h-9 flex items-center justify-center border hover:border-[var(--accent)] transition-colors" style="border-color: var(--border-light); color: var(--fg);">
+      <i class="fas fa-xmark text-sm"></i>
+    </button>
+    <div class="font-mono text-[11px] tracking-[0.2em] uppercase mb-3" style="color: var(--accent);">// Current Rank</div>
+    <h3 class="font-display text-4xl mb-2">What is your current rank?</h3>
+    <p class="text-sm mb-8" style="color: var(--fg-dim);">We'll map your journey from here — including full Dan progression if you're already a black belt.</p>
+
+    <form id="mapForm" class="space-y-6">
+      <div>
+        <label class="font-mono text-[10px] tracking-[0.2em] uppercase block mb-2" style="color: var(--muted);">Current belt / rank</label>
+        <select id="currentRank" class="form-select" required>
+          <optgroup label="Kyu Grades (Colored Belts)">
+            <option value="white">White Belt</option>
+            <option value="yellow">Yellow Belt</option>
+            <option value="orange">Orange Belt</option>
+            <option value="green">Green Belt</option>
+            <option value="purple">Purple Belt</option>
+            <option value="blue">Blue Belt</option>
+            <option value="brown1">1st Brown Belt</option>
+            <option value="brown2">2nd Brown Belt</option>
+            <option value="brown3">3rd Brown Belt</option>
+          </optgroup>
+          <optgroup label="Dan Grades (Black Belt)">
+            <option value="1dan">1st Dan Black Belt</option>
+            <option value="2dan">2nd Dan</option>
+            <option value="3dan">3rd Dan</option>
+            <option value="4dan">4th Dan</option>
+            <option value="5dan">5th Dan</option>
+            <option value="6dan">6th Dan</option>
+            <option value="7dan">7th Dan</option>
+            <option value="8dan">8th Dan</option>
+            <option value="9dan">9th Dan</option>
+            <option value="10dan">10th Dan</option>
+          </optgroup>
+        </select>
+      </div>
+      <div>
+        <label class="font-mono text-[10px] tracking-[0.2em] uppercase block mb-2" style="color: var(--muted);">Date of last grading</label>
+        <input type="date" id="lastGrading" class="form-input" required>
+      </div>
+      <div>
+        <label class="font-mono text-[10px] tracking-[0.2em] uppercase block mb-2" style="color: var(--muted);">Training organisation (optional)</label>
+        <input type="text" id="mapOrg" class="form-input" placeholder="e.g. Shotokan Karate Association">
+      </div>
+      <div>
+        <label class="font-mono text-[10px] tracking-[0.2em] uppercase block mb-2" style="color: var(--muted);">Current training frequency</label>
+        <select id="mapSessions" class="form-select">
+          <option value="1">1 / week</option>
+          <option value="2" selected>2 / week</option>
+          <option value="3">3 / week</option>
+          <option value="4">4 / week</option>
+          <option value="5">5 / week</option>
+          <option value="6">6 / week</option>
+        </select>
+      </div>
+      <div>
+        <label class="font-mono text-[10px] tracking-[0.2em] uppercase block mb-2" style="color: var(--muted);">Hours per session</label>
+        <select id="mapHours" class="form-select">
+          <option value="1">1 hour</option>
+          <option value="1.5" selected>1.5 hours</option>
+          <option value="2">2 hours</option>
+          <option value="2.5">2.5 hours</option>
+          <option value="3">3 hours</option>
+        </select>
+      </div>
+      <div class="flex gap-3 pt-4">
+        <button type="button" onclick="closeModal('map')" class="btn-ghost flex-1 justify-center">Back</button>
+        <button type="submit" class="btn-primary flex-1 justify-center">
+          <span>Map My Journey</span>
+          <i class="fas fa-arrow-right"></i>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ============ MODAL: JOURNEY RESULTS ============ -->
+<div class="modal-backdrop" id="modalResults">
+  <div class="modal-panel p-8 lg:p-10" style="max-width: 800px;">
+    <button onclick="closeModal('results')" class="absolute top-4 right-4 w-9 h-9 flex items-center justify-center border hover:border-[var(--accent)] transition-colors z-10" style="border-color: var(--border-light); color: var(--fg); background: var(--bg-card);">
+      <i class="fas fa-xmark text-sm"></i>
+    </button>
+
+    <div>
+      <div class="font-mono text-[11px] tracking-[0.2em] uppercase mb-3" style="color: var(--accent);">// Your Forecast</div>
+      <h3 class="font-display text-4xl mb-2" id="resultsTitle">Your Journey</h3>
+      <p class="text-sm mb-6" style="color: var(--fg-dim);" id="resultsSubtitle">Based on your current training commitment</p>
+    </div>
+
+    <!-- Summary stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 p-6 border" style="border-color: var(--border); background: var(--bg-darker);">
+      <div>
+        <div class="font-display text-3xl" style="color: var(--accent);" id="statNext">—</div>
+        <div class="font-mono text-[9px] tracking-[0.2em] uppercase" style="color: var(--muted);">Next milestone</div>
+      </div>
+      <div>
+        <div class="font-display text-3xl" id="statDate">—</div>
+        <div class="font-mono text-[9px] tracking-[0.2em] uppercase" style="color: var(--muted);">Projected date</div>
+      </div>
+      <div>
+        <div class="font-display text-3xl" id="statHours">—</div>
+        <div class="font-mono text-[9px] tracking-[0.2em] uppercase" style="color: var(--muted);">Hours needed</div>
+      </div>
+      <div>
+        <div class="font-display text-3xl" id="statFinal">—</div>
+        <div class="font-mono text-[9px] tracking-[0.2em] uppercase" style="color: var(--muted);">Final destination</div>
+      </div>
+    </div>
+
+    <!-- What-if controls - FIXED: now includes both frequency and hours with real-time reactivity -->
+    <div class="mb-6 p-5 border" style="border-color: var(--border); background: var(--bg-card);">
+      <div class="font-mono text-[10px] tracking-[0.2em] uppercase mb-3" style="color: var(--accent);">⚡ What-if scenario — live</div>
+      <div class="flex items-center gap-3 flex-wrap">
+        <label class="text-sm" style="color: var(--fg-dim);">If I train</label>
+        <select id="whatIfSessions" class="form-select" style="width: auto; padding: 0.5rem 0.75rem;">
+          <option value="1">1×</option>
+          <option value="2">2×</option>
+          <option value="3" selected>3×</option>
+          <option value="4">4×</option>
+          <option value="5">5×</option>
+          <option value="6">6×</option>
+        </select>
+        <span class="text-sm" style="color: var(--fg-dim);">per week at</span>
+        <select id="whatIfHours" class="form-select" style="width: auto; padding: 0.5rem 0.75rem;">
+          <option value="1">1h</option>
+          <option value="1.5">1.5h</option>
+          <option value="2">2h</option>
+          <option value="2.5">2.5h</option>
+          <option value="3">3h</option>
+        </select>
+        <span class="text-sm" style="color: var(--fg-dim);">/ session →</span>
+        <div class="font-display text-xl" style="color: var(--accent);" id="whatIfResult">—</div>
+      </div>
+      <div class="mt-3 font-mono text-[10px] tracking-[0.15em]" style="color: var(--muted);" id="whatIfDetails">—</div>
+    </div>
+
+    <!-- Journey timeline -->
+    <div class="journey-timeline" id="journeyTimeline">
+      <div class="journey-line"></div>
+      <div class="journey-line-progress" id="journeyProgress"></div>
+      <!-- Nodes injected by JS -->
+    </div>
+
+    <!-- See More Button - FIXED -->
+    <div class="mt-6 flex justify-center" id="seeMoreContainer" style="display:none;">
+      <button id="seeMoreBtn" onclick="toggleSeeMore()" class="btn-ghost text-xs tracking-[0.2em]">
+        <span id="seeMoreText">SEE MORE → FULL DAN PATH</span>
+        <i class="fas fa-chevron-down ml-2" id="seeMoreIcon"></i>
+      </button>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="mt-8 p-5 border" style="border-color: var(--border); background: var(--bg-darker);">
+      <div class="flex items-start gap-3">
+        <i class="fas fa-triangle-exclamation mt-0.5" style="color: var(--accent);"></i>
+        <p class="text-xs leading-relaxed" style="color: var(--fg-dim);">
+          <strong style="color: var(--fg);">This is a forecast, not a guarantee.</strong> Forecast dates are projections based on your training commitment. Actual promotion depends on technical competence, minimum time-in-grade, conduct, and your instructor's assessment. The instructor's decision always supersedes the forecast.
+        </p>
+      </div>
+    </div>
+
+    <!-- Action buttons -->
+    <div class="flex flex-wrap gap-3 mt-6">
+      <button onclick="prepareAndPrint()" class="btn-primary flex-1 justify-center">
+        <i class="fas fa-file-pdf"></i>
+        <span>Export as PDF</span>
+      </button>
+      <button onclick="closeModal('results')" class="btn-ghost flex-1 justify-center">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PRINT REPORT - FIXED ARCHITECTURE: separate normal-flow container ============ -->
+<div id="printReport" class="print-report">
+  <div style="font-family: 'Bebas Neue', sans-serif; max-width: 800px; margin: 0 auto;">
+    <div style="display:flex; justify-content:space-between; border-bottom: 2px solid #000; padding-bottom: 16px; margin-bottom: 24px;">
+      <div>
+        <div style="font-size: 36px; line-height:1;">FORECAST</div>
+        <div style="font-family: monospace; font-size: 10px; letter-spacing: 0.3em; color:#666;">MARTIAL ARTS PROGRESSION REPORT</div>
+        <div style="font-family: monospace; font-size: 10px; margin-top:8px;" id="printSubtitle"></div>
+      </div>
+      <div style="text-align:right; font-family: monospace; font-size: 11px; color:#666;">
+        <div>Generated: <span id="printDate"></span></div>
+        <div style="margin-top:4px;">Training: <span id="printTraining"></span></div>
+      </div>
+    </div>
+    <div id="printStats" style="display:grid; grid-template-columns: repeat(4,1fr); gap:12px; margin-bottom:24px; border:1px solid #ccc; padding:16px;"></div>
+    <div id="printTimeline"></div>
+    <div style="margin-top:24px; padding:12px; border:1px solid #ccc; font-family: monospace; font-size:10px; color:#666;">
+      <strong style="color:#000;">Disclaimer:</strong> This is a forecast, not a guarantee. Actual promotion depends on technical competence, minimum time-in-grade, conduct, and instructor assessment.
+    </div>
+  </div>
+</div>
+
+<!-- ============ TOAST ============ -->
+<div class="toast" id="toast">
+  <div class="flex items-start gap-3">
+    <div class="w-8 h-8 flex items-center justify-center flex-shrink-0" style="background: var(--accent);">
+      <i class="fas fa-check text-black text-xs"></i>
+    </div>
+    <div>
+      <div class="font-heading text-sm tracking-wider uppercase" id="toastTitle">Done</div>
+      <div class="text-xs mt-1" style="color: var(--fg-dim);" id="toastMsg">Your forecast is ready.</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ BELT PROGRESSION DATA ============
+   Each belt: { key, name, color (hex), minMonths (time-in-grade), minHours }
+   Dan grades follow a cumulative lifetime model.
+*/
+const BELT_PATH = [
+  { key: 'white',  name: 'White Belt',       color: '#ffffff', minMonths: 3,   minHours: 72 },
+  { key: 'yellow', name: 'Yellow Belt',      color: '#FFD700', minMonths: 3,   minHours: 72 },
+  { key: 'orange', name: 'Orange Belt',      color: '#FF8C00', minMonths: 3,   minHours: 72 },
+  { key: 'green',  name: 'Green Belt',       color: '#228B22', minMonths: 3,   minHours: 72 },
+  { key: 'purple', name: 'Purple Belt',      color: '#800080', minMonths: 3,   minHours: 72 },
+  { key: 'blue',   name: 'Blue Belt',        color: '#1E3A8A', minMonths: 6,   minHours: 144 },
+
+  { key: 'brown1', name: '1st Brown Belt',    color: '#8B4513', minMonths: 6,   minHours: 144 },
+  { key: 'brown2', name: '2nd Brown Belt',    color: '#6B3410', minMonths: 6,   minHours: 144 },
+  { key: 'brown3', name: '3rd Brown Belt',    color: '#4A2408', minMonths: 12,  minHours: 288 },
+
+  { key: '1dan',   name: '1st Dan Black Belt',color: '#000000', minMonths: 24,  minHours: 0 },
+  { key: '2dan',   name: '2nd Dan',           color: '#000000', minMonths: 36,  minHours: 0 },
+  { key: '3dan',   name: '3rd Dan',           color: '#000000', minMonths: 48,  minHours: 0 },
+  { key: '4dan',   name: '4th Dan',           color: '#000000', minMonths: 60,  minHours: 0 },
+  { key: '5dan',   name: '5th Dan',           color: '#000000', minMonths: 72,  minHours: 0 },
+  { key: '6dan',   name: '6th Dan',           color: '#000000', minMonths: 84,  minHours: 0 },
+  { key: '7dan',   name: '7th Dan',           color: '#000000', minMonths: 96,  minHours: 0 },
+  { key: '8dan',   name: '8th Dan',           color: '#000000', minMonths: 108, minHours: 0 },
+  { key: '9dan',   name: '9th Dan',           color: '#000000', minMonths: 120, minHours: 0 },
+  { key: '10dan',  name: '10th Dan',          color: '#000000', minMonths: 0,   minHours: 0 }
+];
+
+/* ============ STATE - SINGLE SOURCE OF TRUTH ============ */
+let currentJourney = null;
+let isExpanded = false;
+let currentWhatIfSessions = 3;
+let currentWhatIfHours = 1.5;
+
+function isDanKey(key){ return key && key.includes('dan'); }
+function isWhiteOrColored(key){ return !isDanKey(key); }
+function findFirstDanIndex(){ return BELT_PATH.findIndex(b=>b.key==='1dan'); }
+
+function getDisplayMilestones(journey, expanded){
+  if(!journey) return [];
+  const startIsDan = isDanKey(journey.startRank.key);
+  if(startIsDan){
+    // Already black belt: show current Dan -> 10th Dan
+    if(journey.startRank.key === '10dan') return journey.milestones.slice(0,1);
+    return journey.milestones; // full path from current dan onward (calculateJourney already starts at current)
+  }
+  // White or colored belt
+  if(!expanded){
+    const firstDanIdx = journey.milestones.findIndex(m=>m.belt.key==='1dan');
+    if(firstDanIdx !== -1){
+      return journey.milestones.slice(0, firstDanIdx+1);
+    }
+    return journey.milestones;
+  }
+  // Expanded: full to 10th
+  return journey.milestones;
+}
+
+function recalcFromCurrentState(){
+  if(!currentJourney) return null;
+  const sessions = currentWhatIfSessions;
+  const hours = currentWhatIfHours;
+  const fresh = calculateJourney({
+    startRankKey: currentJourney.startRank.key,
+    startDate: currentJourney.startDate.toISOString().split('T')[0],
+    sessionsPerWeek: sessions,
+    hoursPerSession: hours
+  });
+  fresh.baseSessions = sessions;
+  fresh.baseHours = hours;
+  return fresh;
+}
+
+function updateCurrentJourneyFromWhatIf(){
+  const fresh = recalcFromCurrentState();
+  if(!fresh) return null;
+  currentJourney = fresh;
+  return fresh;
+}
+
+/* ============ THEME ============ */
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme');
+  const next = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('forecast-theme', next);
+  document.getElementById('themeIcon').className = next === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+}
+(function initTheme() {
+  const saved = localStorage.getItem('forecast-theme') || 'dark';
+  document.documentElement.setAttribute('data-theme', saved);
+  document.getElementById('themeIcon').className = saved === 'dark' ? 'fas fa-moon' : 'fas fa-sun';
+})();
+
+/* ============ MODALS ============ */
+function openModal(which) {
+  const id = which === 'start' ? 'modalStart' : which === 'map' ? 'modalMap' : 'modalResults';
+  document.getElementById(id).classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function closeModal(which) {
+  const id = which === 'start' ? 'modalStart' : which === 'map' ? 'modalMap' : 'modalResults';
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+document.querySelectorAll('.modal-backdrop').forEach(m => {
+  m.addEventListener('click', (e) => {
+    if (e.target === m) {
+      m.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+  });
+});
+
+/* ============ PILL SELECTORS ============ */
+document.querySelectorAll('#categorySelector .pill').forEach(p => {
+  p.addEventListener('click', () => {
+    document.querySelectorAll('#categorySelector .pill').forEach(x => x.classList.remove('active'));
+    p.classList.add('active');
+  });
+});
+
+/* ============ CORE CALCULATION ============ */
+function findBeltIndex(key) {
+  return BELT_PATH.findIndex(b => b.key === key);
+}
+
+function calculateJourney({ startRankKey, startDate, sessionsPerWeek, hoursPerSession }) {
+  const startIdx = findBeltIndex(startRankKey);
+  if (startIdx === -1) return null;
+
+  const weeklyHours = sessionsPerWeek * hoursPerSession;
+  const start = new Date(startDate);
+  const milestones = [];
+  let cumulativeMonths = 0;
+  let cumulativeHours = 0;
+  let currentDate = new Date(start);
+
+  // Add current rank as "achieved"
+  milestones.push({
+    belt: BELT_PATH[startIdx],
+    date: new Date(start),
+    status: 'achieved',
+    monthsFromStart: 0,
+    hoursFromStart: 0,
+    isCurrent: true
+  });
+
+  // Project forward through remaining belts
+  for (let i = startIdx + 1; i < BELT_PATH.length; i++) {
+    const belt = BELT_PATH[i];
+    const prev = BELT_PATH[i - 1];
+
+    // Time needed: max of minimum months OR hours needed at weekly pace
+    const monthsNeeded = belt.minMonths;
+    const hoursNeeded = belt.minHours;
+    const weeksForHours = hoursNeeded / weeklyHours;
+    const monthsForHours = weeksForHours / 4.33;
+
+    const monthsRequired = Math.max(monthsNeeded, monthsForHours);
+
+    cumulativeMonths += monthsRequired;
+    cumulativeHours += hoursNeeded;
+
+    const projectedDate = new Date(start);
+    projectedDate.setMonth(projectedDate.getMonth() + cumulativeMonths);
+
+    milestones.push({
+      belt,
+      date: projectedDate,
+      status: 'projected',
+      monthsFromStart: cumulativeMonths,
+      hoursFromStart: cumulativeHours,
+      isCurrent: false
+    });
+  }
+
+  return {
+    startRank: BELT_PATH[startIdx],
+    startDate: start,
+    weeklyHours,
+    milestones,
+    finalDestination: BELT_PATH[BELT_PATH.length - 1]
+  };
+}
+
+function formatDate(date) {
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${months[date.getMonth()]} ${date.getFullYear()}`;
+}
+
+function formatDateLong(date) {
+  return date.toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+}
+
+/* ============ FORM HANDLERS ============ */
+document.getElementById('startForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const startDate = document.getElementById('startDate').value;
+  const sessions = parseFloat(document.getElementById('startSessions').value);
+  const hours = parseFloat(document.getElementById('startHours').value);
+
+  if (!startDate) return;
+
+  const journey = calculateJourney({
+    startRankKey: 'white',
+    startDate,
+    sessionsPerWeek: sessions,
+    hoursPerSession: hours
+  });
+  currentJourney = journey;
+  currentJourney.baseSessions = sessions;
+  currentJourney.baseHours = hours;
+  renderResults(journey);
+  closeModal('start');
+  setTimeout(() => openModal('results'), 300);
+});
+
+document.getElementById('mapForm').addEventListener('submit', (e) => {
+  e.preventDefault();
+  const rank = document.getElementById('currentRank').value;
+  const lastGrading = document.getElementById('lastGrading').value;
+  const sessions = parseFloat(document.getElementById('mapSessions').value);
+  const hours = parseFloat(document.getElementById('mapHours').value);
+
+  if (!lastGrading) return;
+
+  const journey = calculateJourney({
+    startRankKey: rank,
+    startDate: lastGrading,
+    sessionsPerWeek: sessions,
+    hoursPerSession: hours
+  });
+  currentJourney = journey;
+  currentJourney.baseSessions = sessions;
+  currentJourney.baseHours = hours;
+  renderResults(journey);
+  closeModal('map');
+  setTimeout(() => openModal('results'), 300);
+});
+
+/* ============ RENDER RESULTS - SINGLE SOURCE OF TRUTH ============ */
+function renderResults(journey, opts={}) {
+  const preserveWhatIf = opts.preserveWhatIf || false;
+  currentJourney = journey;
+  if(!preserveWhatIf){
+    // initialize what-if from base, and reset expanded per rules
+    currentWhatIfSessions = Math.min(6, Math.max(1, Math.round(journey.baseSessions)));
+    currentWhatIfHours = journey.baseHours;
+    // Rule: white or colored belt starts collapsed to 1st Dan, black belt expanded, 10th Dan no button
+    if(isDanKey(journey.startRank.key)){
+      if(journey.startRank.key === '10dan') isExpanded = false;
+      else isExpanded = true; // black belt sees full path immediately per spec
+    } else {
+      isExpanded = false; // white or colored: stop at 1st Dan initially
+    }
+  }
+
+  const isBlackBelt = isDanKey(journey.startRank.key);
+  const displayMilestones = getDisplayMilestones(journey, isExpanded);
+  const nextMilestone = displayMilestones.find(m => m.status === 'projected') || journey.milestones.find(m=>m.status==='projected');
+
+  // Title
+  document.getElementById('resultsTitle').textContent = isBlackBelt
+    ? `Your Dan Journey from ${journey.startRank.name}`
+    : `Your Journey to Black Belt & Beyond`;
+  document.getElementById('resultsSubtitle').textContent =
+    `Based on ${journey.weeklyHours.toFixed(1)} hours/week (${journey.baseSessions}× ${journey.baseHours}h) · Starting ${formatDateLong(journey.startDate)} · Total: ${Math.round(journey.milestones[journey.milestones.length-1].monthsFromStart)} months`;
+
+  // Stats - always reflect current forecast state
+  if (nextMilestone) {
+    document.getElementById('statNext').textContent = nextMilestone.belt.name.replace(' Belt', '');
+    document.getElementById('statDate').textContent = formatDate(nextMilestone.date);
+    document.getElementById('statHours').textContent = Math.round(nextMilestone.hoursFromStart);
+  } else {
+    document.getElementById('statNext').textContent = journey.startRank.name.replace(' Belt','');
+    document.getElementById('statDate').textContent = 'Achieved';
+    document.getElementById('statHours').textContent = '0';
+  }
+  const finalNode = journey.milestones[journey.milestones.length-1];
+  document.getElementById('statFinal').textContent = finalNode ? finalNode.belt.name.replace(' Belt','') : '10th Dan';
+
+  // What-if selectors - reflect current state
+  const whatIfSel = document.getElementById('whatIfSessions');
+  const whatIfHoursSel = document.getElementById('whatIfHours');
+  if(whatIfSel) whatIfSel.value = currentWhatIfSessions;
+  if(whatIfHoursSel) whatIfHoursSel.value = currentWhatIfHours;
+
+  // Update what-if summary immediately
+  updateWhatIfDisplay(journey);
+
+  // Timeline - render displayMilestones only
+  const timeline = document.getElementById('journeyTimeline');
+  timeline.querySelectorAll('.journey-node').forEach(n => n.remove());
+  displayMilestones.forEach((m) => {
+    const node = document.createElement('div');
+    node.className = 'journey-node ' + m.status + (m.isCurrent ? ' current' : '');
+    const beltColor = m.belt.key === 'white' ? '#ffffff' : m.belt.color;
+    const beltBorder = m.belt.key === 'white' ? '#999' : 'rgba(255,255,255,0.2)';
+    node.innerHTML = `
+      <div class="journey-dot"></div>
+      <div class="flex items-start justify-between gap-4 flex-wrap">
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1 flex-wrap">
+            <span class="journey-belt" style="background: ${beltColor}; border-color: ${beltBorder};"></span>
+            <div class="font-display text-xl md:text-2xl">${m.belt.name}</div>
+            ${m.isCurrent ? '<span class="font-mono text-[9px] tracking-[0.2em] uppercase px-2 py-0.5" style="background: var(--accent); color: #000;">YOU ARE HERE</span>' : ''}
+            ${m.status === 'achieved' && !m.isCurrent ? '<span class="font-mono text-[9px] tracking-[0.2em] uppercase px-2 py-0.5" style="background: var(--border-light); color: var(--fg-dim);">ACHIEVED</span>' : ''}
+          </div>
+          <div class="text-xs" style="color: var(--fg-dim);">
+            ${m.status === 'projected' ? `Projected: <strong style="color: var(--fg);">${formatDate(m.date)}</strong>` : `Achieved: <strong style="color: var(--fg);">${formatDate(m.date)}</strong>`}
+          </div>
+        </div>
+        <div class="text-right font-mono text-[10px] tracking-[0.15em]" style="color: var(--muted);">
+          <div>+${Math.round(m.monthsFromStart)} MO</div>
+          <div>${Math.round(m.hoursFromStart)} HRS</div>
+        </div>
+      </div>
+    `;
+    timeline.appendChild(node);
+  });
+
+  // Progress bar based on display milestones
+  setTimeout(() => {
+    const achievedCount = displayMilestones.filter(m => m.status === 'achieved').length;
+    const pct = displayMilestones.length ? (achievedCount / displayMilestones.length) * 100 : 0;
+    document.getElementById('journeyProgress').style.height = pct + '%';
+  }, 100);
+
+  // See More button logic per spec
+  const seeMoreContainer = document.getElementById('seeMoreContainer');
+  const seeMoreText = document.getElementById('seeMoreText');
+  const seeMoreIcon = document.getElementById('seeMoreIcon');
+  if(isDanKey(journey.startRank.key)){
+    if(journey.startRank.key === '10dan'){
+      seeMoreContainer.style.display = 'none';
+    } else {
+      // Already black belt 1-9: no See More needed, they see full path immediately
+      seeMoreContainer.style.display = 'none';
+    }
+  } else {
+    // White or colored: show See More until expanded
+    if(isExpanded){
+      seeMoreText.textContent = 'SHOW LESS';
+      seeMoreIcon.className = 'fas fa-chevron-up ml-2';
+      seeMoreContainer.style.display = 'flex';
+    } else {
+      seeMoreText.textContent = 'SEE MORE → FULL DAN PATH';
+      seeMoreIcon.className = 'fas fa-chevron-down ml-2';
+      seeMoreContainer.style.display = 'flex';
+    }
+  }
+
+  // Build fresh print report from same current state (single source)
+  buildPrintReport(journey, displayMilestones);
+}
+
+function updateWhatIfDisplay(journey){
+  if(!journey) return;
+  const finalDate = journey.milestones[journey.milestones.length - 1].date;
+  document.getElementById('whatIfResult').textContent = formatDate(finalDate);
+  const next = journey.milestones.find(m=>m.status==='projected');
+  const detailsEl = document.getElementById('whatIfDetails');
+  if(detailsEl){
+    const weekly = journey.weeklyHours.toFixed(1);
+    const totalMonths = Math.round(journey.milestones[journey.milestones.length-1].monthsFromStart);
+    const years = (totalMonths/12).toFixed(1);
+    const nextInfo = next ? `${next.belt.name} in ${formatDate(next.date)}` : 'Journey complete';
+    detailsEl.textContent = `${weekly}h/week · ${totalMonths} months total (~${years} years) · Next: ${nextInfo} · ${journey.milestones.length-1} milestones`;
+  }
+}
+
+function buildPrintReport(journey, displayMilestones){
+  if(!journey) return;
+  const printDate = document.getElementById('printDate');
+  if(printDate) printDate.textContent = formatDateLong(new Date());
+  const printSubtitle = document.getElementById('printSubtitle');
+  if(printSubtitle) printSubtitle.textContent = `${journey.startRank.name} → 10th Dan · ${journey.weeklyHours.toFixed(1)}h/week · Starting ${formatDateLong(journey.startDate)}`;
+  const printTraining = document.getElementById('printTraining');
+  if(printTraining) printTraining.textContent = `${journey.baseSessions}×/week at ${journey.baseHours}h (${journey.weeklyHours.toFixed(1)}h/week)`;
+
+  const printStats = document.getElementById('printStats');
+  if(printStats){
+    const next = displayMilestones.find(m=>m.status==='projected') || journey.milestones.find(m=>m.status==='projected');
+    const finalMil = journey.milestones[journey.milestones.length-1];
+    printStats.innerHTML = `
+      <div><div style="font-size:22px; font-weight:bold; color:#FF5400;">${next ? next.belt.name.replace(' Belt','') : '—'}</div><div style="font-family:monospace; font-size:9px; letter-spacing:0.15em; color:#666;">NEXT MILESTONE</div></div>
+      <div><div style="font-size:22px; font-weight:bold;">${next ? formatDate(next.date) : '—'}</div><div style="font-family:monospace; font-size:9px; letter-spacing:0.15em; color:#666;">PROJECTED DATE</div></div>
+      <div><div style="font-size:22px; font-weight:bold;">${next ? Math.round(next.hoursFromStart) : '0'}</div><div style="font-family:monospace; font-size:9px; letter-spacing:0.15em; color:#666;">HOURS NEEDED</div></div>
+      <div><div style="font-size:22px; font-weight:bold;">${finalMil.belt.name}</div><div style="font-family:monospace; font-size:9px; letter-spacing:0.15em; color:#666;">FINAL DESTINATION</div></div>
+    `;
+  }
+  const printTimeline = document.getElementById('printTimeline');
+  if(printTimeline){
+    printTimeline.innerHTML = displayMilestones.map(m=>{
+      const isCurrent = m.isCurrent ? '<span style="background:#FF5400; color:#000; font-family:monospace; font-size:8px; padding:2px 6px; letter-spacing:0.15em;">YOU ARE HERE</span>' : '';
+      return `<div style="display:flex; justify-content:space-between; border-left:2px solid ${m.isCurrent ? '#FF5400' : '#ccc'}; padding:8px 12px; margin-bottom:8px;">
+        <div><div style="font-weight:bold;">${m.belt.name} ${isCurrent}</div><div style="font-family:monospace; font-size:10px; color:#666;">${m.status==='projected' ? 'Projected: '+formatDate(m.date) : 'Achieved: '+formatDate(m.date)} · +${Math.round(m.monthsFromStart)} MO · ${Math.round(m.hoursFromStart)} HRS</div></div>
+      </div>`;
+    }).join('');
+  }
+}
+
+
+/* ============ WHAT-IF - REAL-TIME REACTIVITY (SURGICAL FIX) ============ */
+function handleWhatIfChange(){
+  const selSess = document.getElementById('whatIfSessions');
+  const selHours = document.getElementById('whatIfHours');
+  if(!selSess || !selHours) return;
+  currentWhatIfSessions = parseFloat(selSess.value);
+  currentWhatIfHours = parseFloat(selHours.value);
+  const fresh = updateCurrentJourneyFromWhatIf();
+  if(!fresh) return;
+  // Re-render everything immediately from fresh state, preserving what-if selector values
+  renderResults(fresh, {preserveWhatIf:true});
+}
+
+function updateWhatIf(){ handleWhatIfChange(); }
+
+document.getElementById('whatIfSessions').addEventListener('change', handleWhatIfChange);
+document.getElementById('whatIfHours').addEventListener('change', handleWhatIfChange);
+// Also listen to input for immediate feedback
+document.getElementById('whatIfSessions').addEventListener('input', handleWhatIfChange);
+document.getElementById('whatIfHours').addEventListener('input', handleWhatIfChange);
+
+function toggleSeeMore(){
+  isExpanded = !isExpanded;
+  if(currentJourney){
+    renderResults(currentJourney, {preserveWhatIf:true});
+  }
+}
+
+function prepareAndPrint(){
+  // Recalculate from current what-if state, rebuild report fresh, then print - stateless
+  const fresh = recalcFromCurrentState() || currentJourney;
+  if(fresh){
+    currentJourney = fresh;
+    const display = getDisplayMilestones(fresh, isExpanded);
+    buildPrintReport(fresh, display);
+  }
+  // Small delay to ensure DOM paint before print
+  setTimeout(()=>{ window.print(); }, 50);
+}
+
+
+/* ============ REVEAL ON SCROLL ============ */
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('in-view');
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12 });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+/* ============ HERO REEL ============ */
+const frames = document.querySelectorAll('.reel-frame');
+let currentFrame = 0;
+setInterval(() => {
+  frames.forEach((f, i) => f.classList.toggle('active', i === (currentFrame + 1) % frames.length));
+  currentFrame = (currentFrame + 1) % frames.length;
+}, 5000);
+
+/* ============ SET DEFAULT DATES ============ */
+(function setDefaults() {
+  const today = new Date().toISOString().split('T')[0];
+  const threeMonthsAgo = new Date();
+  threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+  document.getElementById('startDate').value = today;
+  document.getElementById('lastGrading').value = threeMonthsAgo.toISOString().split('T')[0];
+})();
+</script>
+<script>(function(){var loc=location.href.replace(/#.*$/,"");var ATTR_NAMES=["data-product-id","data-productid","data-product_id","product-id","productid","product_id","data-source-entity-id","source-entity-id","source_entity_id","data-product","data-metadata","data-meta"];var DATASET_KEYS=["productId","productid","product_id","sourceEntityId","sourceentityid","source_entity_id","product","metadata","meta"];function readProductId(value){if(typeof value!=="string"||value.length===0)return null;if(/^[0-9]{6,}$/.test(value))return value;var match=value.match(/(?:product(?:_|-)?id|source(?:_|-)?entity(?:_|-)?id)["'=:\s]+([0-9]{6,})/i);return match?match[1]:null}function extractProductId(start){for(var node=start;node&&node!==document.body;node=node.parentElement){for(var i=0;i<ATTR_NAMES.length;i++){var attrValue=node.getAttribute&&node.getAttribute(ATTR_NAMES[i]);var attrProductId=readProductId(attrValue);if(attrProductId)return attrProductId}var dataset=node.dataset||null;if(dataset){for(var j=0;j<DATASET_KEYS.length;j++){var dataValue=dataset[DATASET_KEYS[j]];var dataProductId=readProductId(dataValue);if(dataProductId)return dataProductId}}}return null}function isInlineMediaSlotElement(node){return !!(node&&node.getAttribute&&node.getAttribute("data-clippy-inline-media-slot")!==null)}function findInlineMediaSlot(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(isInlineMediaSlotElement(node))return node}return null}function readInlineMediaUrl(node){if(!node)return null;return node.getAttribute&&((node.getAttribute("data-clippy-inline-media-url")||node.getAttribute("data-url")||node.getAttribute("data_url")))||node.href||null}function stripHash(url){return String(url).replace(/#.*$/,"")}function urlsMatch(a,b){if(!a||!b)return false;try{return stripHash(new URL(a,loc).href)===stripHash(new URL(b,loc).href)}catch(_){return stripHash(a)===stripHash(b)}}function isFirstPartyReelUrl(value){try{var url=new URL(value,loc);if(url.protocol!=="https:")return false;var host=url.hostname.toLowerCase();var supported=host==="instagram.com"||host.endsWith(".instagram.com")||host==="facebook.com"||host.endsWith(".facebook.com");return supported&&/\/reels?\//i.test(url.pathname)}catch(_){return false}}function isInlineMediaUrlClick(node,href){var slot=findInlineMediaSlot(node);if(!slot)return false;var slotUrl=readInlineMediaUrl(slot);if(slotUrl)return urlsMatch(href,slotUrl);return isFirstPartyReelUrl(href)}function findDataHref(start){for(var node=start;node&&node!==document.body;node=node.parentElement){if(node.getAttribute){var href=node.getAttribute("data-href")||node.getAttribute("data-url");if(href)return{href:href,node:node}}}return null}var nativeOpen=window.open;window.open=function(url){if(parent!==window&&typeof url==="string"&&/^https?:\/\//.test(url)){parent.postMessage({type:"ecto:usercontent-link-click",href:url},"*");return null}return nativeOpen?nativeOpen.apply(window,arguments):null};document.addEventListener("click",function(e){var target=e.target instanceof Element?e.target:null;if(!target)return;if(parent===window)return;var a=target.closest?target.closest("a[href]"):null;if(a&&a.href&&/^https?:\/\//.test(a.href)&&a.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(a,a.href))return;var productId=extractProductId(target)||extractProductId(a);if(productId){e.preventDefault();parent.postMessage({type:"ecto-artifact-link-click",productId:productId},"*");return}e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:a.href},"*");return}var dataHref=findDataHref(target);if(dataHref&&/^https?:\/\//.test(dataHref.href)&&dataHref.href.replace(/#.*$/,"")!==loc){if(isInlineMediaUrlClick(dataHref.node,dataHref.href))return;e.preventDefault();parent.postMessage({type:"ecto:usercontent-link-click",href:dataHref.href},"*")}},true)})();</script><script>(function(){var FOCUS_TYPE="ecto:artifact-focus-request";var CLOSE_TYPE="ecto:artifact-close-request";function focusArtifactDocument(){var body=document.body;if(!body)return;try{window.focus();}catch(e){}if(!body.hasAttribute("tabindex"))body.setAttribute("tabindex","-1");try{body.focus({preventScroll:true});}catch(e){try{body.focus();}catch(e2){}}}window.addEventListener("message",function(event){if(event.source!==window.parent)return;var data=event.data;if(!data||typeof data!=="object"||data.type!==FOCUS_TYPE)return;if(document.readyState==="loading"){document.addEventListener("DOMContentLoaded",focusArtifactDocument,{once:true});return;}focusArtifactDocument();});window.addEventListener("keydown",function(event){if(event.key!=="Escape")return;window.setTimeout(function(){if(event.defaultPrevented)return;window.parent.postMessage({type:CLOSE_TYPE},"*");},0);});})();</script></body>
+</html>
