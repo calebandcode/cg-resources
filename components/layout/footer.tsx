@@ -31,8 +31,8 @@ const contactDetails = [
   },
   {
     label: "Alternate Line",
-    value: "0806 122 7444",
-    href: "tel:08061227444",
+    value: "0703 741 0729",
+    href: "tel:07037410729",
     icon: PhoneIcon,
   },
   {
