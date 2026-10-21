@@ -206,7 +206,7 @@ export function Instructors() {
                       )}
                     </div>
 
-                    {/* RIGHT CARD: Quote & Bio Card (Black / Dark Charcoal) */}
+                    {/* RIGHT CARD: Profile & Bio Card (Black / Dark Charcoal) */}
                     <div
                       className={cn(
                         "w-[300px] sm:w-[420px] lg:w-[480px] h-[400px] sm:h-[450px] lg:h-[480px]",
@@ -214,19 +214,17 @@ export function Instructors() {
                         "flex flex-col justify-between shadow-2xl border border-white/10 shrink-0 relative overflow-hidden"
                       )}
                     >
-                      {/* Top Quote & Bio Content */}
-                      <div className="space-y-2.5 sm:space-y-3 overflow-y-auto pr-1">
-                        <span className="font-serif text-2xl sm:text-4xl text-accent/80 leading-none block select-none">
-                          “
+                      {/* Top Bio Content */}
+                      <div className="space-y-3 sm:space-y-4 overflow-y-auto pr-1">
+                        <span className="text-[0.68rem] font-bold uppercase tracking-widest text-accent block">
+                          Instructor Profile
                         </span>
-                        {inst.quote && (
-                          <p className="text-white/90 text-xs sm:text-sm lg:text-[0.95rem] font-sans leading-relaxed italic">
-                            {inst.quote}
-                          </p>
-                        )}
-                        <div className="space-y-2 pt-1 border-t border-white/10">
+                        <div className="space-y-3">
                           {inst.bio.map((paragraph, pIdx) => (
-                            <p key={pIdx} className="text-white/70 text-xs sm:text-[0.82rem] font-sans leading-relaxed">
+                            <p
+                              key={pIdx}
+                              className="text-white/85 text-xs sm:text-sm lg:text-base font-sans leading-relaxed"
+                            >
                               {paragraph}
                             </p>
                           ))}

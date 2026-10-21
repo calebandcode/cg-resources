@@ -8,6 +8,7 @@ import { useScrollTo } from "@/components/providers/smooth-scroll-provider";
 const EASE = [0.22, 1, 0.36, 1] as const;
 
 const slides = [
+  "/assets/images/O.J. Karate.jpg",
   "/assets/images/nujahan.jpg",
   "/assets/images/marilyn-kids.jpg",
   "/assets/images/lovefeastgroup.jpg",
@@ -52,7 +53,7 @@ export function Hero() {
               isActive ? "opacity-100 scale-100" : "opacity-0 scale-108 pointer-events-none"
             }`}
             style={{
-              backgroundImage: `url('${slide}')`,
+              backgroundImage: `url('${encodeURI(slide)}')`,
               transitionProperty: "opacity, transform",
               transitionDuration: "1400ms, 6500ms",
               transitionTimingFunction: "ease, linear",
