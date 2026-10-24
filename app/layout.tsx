@@ -24,11 +24,14 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
+      { url: "/assets/CMA-Logo.png", type: "image/png" },
       { url: "/favicon.svg", type: "image/svg+xml" },
       { url: "/favicon.ico", sizes: "any" },
     ],
-    apple: "/favicon.svg",
-    shortcut: "/favicon.svg",
+    apple: [
+      { url: "/assets/CMA-Logo.png", sizes: "180x180", type: "image/png" },
+    ],
+    shortcut: "/assets/CMA-Logo.png",
   },
   openGraph: {
     type: "website",
