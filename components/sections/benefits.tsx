@@ -20,7 +20,7 @@ const benefits: BenefitItem[] = [
     label: "Structured Progression",
     title: "Clear Rank Advancement",
     desc: "Clear grading, official technical syllabus, and recognized certification pathways from white belt to master ranks.",
-    image: "/assets/images/sensei-richqrd-01.webp",
+    image: "/assets/images/sensei-richqrd.webp",
   },
   {
     label: "Multiple Disciplines",

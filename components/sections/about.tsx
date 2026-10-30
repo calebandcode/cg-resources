@@ -53,7 +53,7 @@ export function About() {
               <FadeIn delay={0.1} className="col-span-4">
                 <div className="relative h-[380px] xl:h-[420px] w-full rounded-[36px] overflow-hidden bg-[#e8ecf2] shadow-md transition-transform duration-500 hover:scale-[1.02] group">
                   <Image
-                    src="/assets/images/sensei-richqrd-01.webp"
+                    src="/assets/images/sensei-richqrd.webp"
                     alt="Classical Martial Arts Kata"
                     fill
                     sizes="(max-width: 1280px) 300px, 350px"
@@ -139,7 +139,7 @@ export function About() {
               {/* Mobile Card 1 */}
               <div className="col-span-4 relative h-48 sm:h-64 rounded-[22px] sm:rounded-[28px] overflow-hidden bg-[#e8ecf2] shadow-sm">
                 <Image
-                  src="/assets/images/sensei-richqrd-01.webp"
+                  src="/assets/images/sensei-richqrd.webp"
                   alt="Classical Martial Arts Kata"
                   fill
                   sizes="33vw"

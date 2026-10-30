@@ -84,6 +84,7 @@ export const INSTRUCTORS: Instructor[] = [
     role: "2nd Dan Karate · 7+ Years of Teaching",
     title: "Senior Instructor",
     category: "Senior Instructor",
+    image: "/assets/images/patience_cropped_img.jpeg",
     monogram: "PT",
     bgGradient: "from-[#3d1a08] via-[#2b1205] to-[#170a03]",
     bio: [
